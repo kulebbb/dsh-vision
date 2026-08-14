@@ -1,0 +1,20 @@
+{
+  "name": "@deepseek-ai/dsh-vision",
+  "version": "0.1.0",
+  "description": "Give text-only DeepSeek models vision by describing images through an OpenAI-compatible vision model",
+  "private": true,
+  "type": "module",
+  "main": "lib/index.js",
+  "exports": {
+    ".": { "default": "./lib/index.js" },
+    "./package.json": "./package.json"
+  },
+  "peerDependencies": {
+    "@deepseek-ai/dsh-anonymous-user-id": "*",
+    "@deepseek-ai/dsh-credentials": "*",
+    "@deepseek-ai/dsh-llm": "*",
+    "@deepseek-ai/dsh-llm-deepseek": "*",
+    "@deepseek-ai/dsh-tools": "*"
+  },
+  "license": "MIT"
+}
