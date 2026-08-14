@@ -85,3 +85,48 @@ test("stream throws VISION_UNAVAILABLE when vision key is missing", async () => 
     (e) => e.code === "VISION_UNAVAILABLE"
   );
 });
+
+test("stream truncates images beyond maxImages", async () => {
+  let delegated;
+  DeepSeekAdapter.prototype.stream = async function* (options) { delegated = options; };
+  const vision = {
+    maxImages: 2,
+    readImage: async (ref) => ({ ref, data: new Uint8Array([1]) }),
+    resolveApiKey: async () => "sk-vision",
+    baseUrl: "https://vision.example/v1",
+    model: "qwen-vl",
+    timeoutMs: 5000
+  };
+  globalThis.fetch = async () => ({ ok: true, status: 200, json: async () => ({ choices: [{ message: { content: "desc" } }] }) });
+  const adapter = makeAdapter(vision);
+  const ref = (id) => ({ attachmentId: id, mediaType: "image/png", bytes: 1, width: 1, height: 1 });
+  const options = { messages: [{ content: [
+    { type: "image", attachment: ref("a") },
+    { type: "image", attachment: ref("b") },
+    { type: "image", attachment: ref("c") }
+  ] }] };
+  for await (const _ of adapter.stream(options)) { /* empty */ }
+  assert.deepEqual(delegated.messages[0].content, [
+    { type: "text", text: "[Image 1] desc" },
+    { type: "text", text: "[Image 2] desc" },
+    { type: "text", text: "[Image 3] <图片已截断>" }
+  ]);
+});
+
+test("stream keeps per-image describe failure as placeholder", async () => {
+  let delegated;
+  DeepSeekAdapter.prototype.stream = async function* (options) { delegated = options; };
+  const vision = {
+    maxImages: 5,
+    readImage: async (ref) => ({ ref, data: new Uint8Array([1]) }),
+    resolveApiKey: async () => "sk-vision",
+    baseUrl: "https://vision.example/v1",
+    model: "qwen-vl",
+    timeoutMs: 5000
+  };
+  globalThis.fetch = async () => ({ ok: false, status: 500, json: async () => ({}) });
+  const adapter = makeAdapter(vision);
+  const options = { messages: [{ content: [{ type: "image", attachment: imageRef }] }] };
+  for await (const _ of adapter.stream(options)) { /* empty */ }
+  assert.equal(delegated.messages[0].content[0].text, "[Image 1] <描述失败: vision API error (HTTP 500)>");
+});

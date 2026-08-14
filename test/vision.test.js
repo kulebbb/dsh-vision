@@ -44,3 +44,26 @@ test("describeImage: empty content throws VISION_EMPTY", async () => {
     (e) => e.code === "VISION_EMPTY"
   );
 });
+
+test("describeImage: timeout throws VISION_TIMEOUT", async () => {
+  // A ref'd timer keeps the event loop alive past the unref'd AbortSignal.timeout,
+  // then the mock rejects so the catch classifies it as a timeout.
+  globalThis.fetch = async () => new Promise((_resolve, reject) => {
+    setTimeout(() => reject(new Error("slow")), 40);
+  });
+  const deps = { baseUrl: "https://v", model: "m", resolveApiKey: async () => "k", timeoutMs: 10 };
+  await assert.rejects(
+    describeImage(bytes, "image/png", undefined, undefined, deps),
+    (e) => e.code === "VISION_TIMEOUT"
+  );
+});
+
+test("describeImage: caller abort throws VISION_ABORTED", async () => {
+  globalThis.fetch = async () => { throw new Error("aborted"); };
+  const deps = { baseUrl: "https://v", model: "m", resolveApiKey: async () => "k", timeoutMs: 5000 };
+  const signal = AbortSignal.abort();
+  await assert.rejects(
+    describeImage(bytes, "image/png", undefined, signal, deps),
+    (e) => e.code === "VISION_ABORTED"
+  );
+});
