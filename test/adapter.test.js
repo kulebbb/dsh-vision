@@ -1,6 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { DeepSeekAdapter } from "@deepseek-ai/dsh-llm-deepseek";
+import { LlmError } from "@deepseek-ai/dsh-llm";
 import { VisionDeepSeekAdapter } from "../lib/adapter.js";
 
 function makeAdapter(vision = {}) {
@@ -66,4 +67,21 @@ test("stream with images rewrites messages before delegating", async () => {
     { type: "text", text: "[Image 1] a red car" }
   ]);
   assert.equal(options.messages[0].content[1].type, "image");
+});
+
+test("stream throws VISION_UNAVAILABLE when vision key is missing", async () => {
+  const vision = {
+    maxImages: 5,
+    readImage: async (ref) => ({ ref, data: new Uint8Array([1]) }),
+    resolveApiKey: async () => { throw new LlmError("no vision key", "VISION_UNAVAILABLE"); },
+    baseUrl: "https://vision.example/v1",
+    model: "qwen-vl",
+    timeoutMs: 5000
+  };
+  const adapter = makeAdapter(vision);
+  const options = { messages: [{ content: [{ type: "image", attachment: imageRef }] }] };
+  await assert.rejects(
+    async () => { for await (const _ of adapter.stream(options)) { /* empty */ } },
+    (e) => e.code === "VISION_UNAVAILABLE"
+  );
 });
