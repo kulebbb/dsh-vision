@@ -7,7 +7,18 @@
   "main": "lib/index.js",
   "exports": {
     ".": { "default": "./lib/index.js" },
+    "./client": { "default": "./lib/client.js" },
     "./package.json": "./package.json"
+  },
+  "dsh": {
+    "client": {
+      "inject": [
+        "@deepseek-ai/dsh-client-runtime",
+        "@deepseek-ai/dsh-client-locale",
+        "@deepseek-ai/dsh-client-ui-settings"
+      ],
+      "platform": "web"
+    }
   },
   "peerDependencies": {
     "@deepseek-ai/cordis": "*",
@@ -16,7 +27,9 @@
     "@deepseek-ai/dsh-launch-environment": "*",
     "@deepseek-ai/dsh-llm": "*",
     "@deepseek-ai/dsh-llm-deepseek": "*",
-    "@deepseek-ai/dsh-tools": "*"
+    "@deepseek-ai/dsh-settings": "*",
+    "@deepseek-ai/dsh-tools": "*",
+    "@deepseek-ai/schemastery": "*"
   },
   "license": "MIT"
 }
