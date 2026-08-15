@@ -11,6 +11,7 @@
 | `lib/vision.js` | `describeImage()`：OpenAI 兼容 chat/completions 视觉调用 |
 | `lib/rewrite.js` | `collectImages` / `mapImages` 纯变换 |
 | `lib/tool.js` | `describe_image` 工具定义 |
+| `lib/client.js` | Browser half：Settings 里的「视觉/Vision」配置页 |
 
 ## 安装（web profile）
 
@@ -44,6 +45,8 @@ pnpm add link:/Users/zhaoliang/Documents/coding/deepseek-harness/plugins/dsh-vis
 | `vision.maxImages` | `5` | 单请求最多描述的图片数 |
 
 密钥经 `ctx.credentials` 按 ref 每次解析（存环境变量或 `$DSH_HOME/.credentials.yaml`），**不进配置**。
+
+**Settings UI**：重启后，打开 DSH 的 Settings 会出现「视觉 / Vision」页，可在其中直接编辑 `vision.baseUrl` / `vision.model` / `vision.apiKeyEnv` / `vision.timeoutMs` / `vision.maxImages` 以及 API Key（key 作为凭据写入，不进设置文件）。端点/模型等字段保存后即时生效（无需重启），API Key 也即时生效。
 
 ## 使用
 
