@@ -1,6 +1,8 @@
-# @deepseek-ai/dsh-vision
+# @kulebbb/dsh-vision
 
 给没有视觉能力的 DeepSeek 模型补齐视觉能力：把发给模型的图片块调一个 OpenAI 兼容视觉模型转成文字描述，再交给纯文本模型。参考 [ErlichLiu/deepseek-vision](https://github.com/ErlichLiu/deepseek-vision) 的核心机制，以 DSH 原生**适配器插件**实现。
+
+仓库：<https://github.com/kulebbb/dsh-vision> · npm：<https://www.npmjs.com/package/@kulebbb/dsh-vision>
 
 ## 结构
 
@@ -17,19 +19,29 @@
 
 ```sh
 cd ~/.dsh/profiles/web
-pnpm add link:/Users/zhaoliang/Documents/coding/deepseek-harness/plugins/dsh-vision
-# 在 cordis.patch.yml 的 insert 列表追加（config 可按需覆盖）：
-#   - id: dsh-vision
-#     name: '@deepseek-ai/dsh-vision'
-#     config:
-#       deepseek:
-#         apiKeyEnv: DEEPSEEK_API_KEY
-#       vision:
-#         baseUrl: https://dashscope.aliyuncs.com/compatible-mode/v1
-#         model: qwen-vl-max
-#         apiKeyEnv: VISION_API_KEY
-# 然后重启 dsh web。
+pnpm add @kulebbb/dsh-vision
 ```
+
+在 `cordis.patch.yml` 的 insert 列表追加（config 可按需覆盖）：
+
+```yaml
+- insert:
+    - id: dsh-vision
+      name: '@kulebbb/dsh-vision'
+      config:
+        deepseek:
+          apiKeyEnv: DEEPSEEK_API_KEY
+        vision:
+          baseUrl: https://dashscope.aliyuncs.com/compatible-mode/v1
+          model: qwen-vl-max
+          apiKeyEnv: VISION_API_KEY
+```
+
+然后重启 `dsh web`。
+
+也可以直接从 GitHub 安装（不经过 npm registry）：`pnpm add github:kulebbb/dsh-vision`。
+
+> 依赖的 `@deepseek-ai/*` 运行库由 DSH 安装自带（peer 依赖已标为 optional，安装时无需也不可单独拉取），本插件无需额外安装任何依赖。
 
 ## 配置
 
@@ -56,5 +68,9 @@ pnpm add link:/Users/zhaoliang/Documents/coding/deepseek-harness/plugins/dsh-vis
 ## 测试
 
 ```sh
-cd plugins/dsh-vision && node --test test/
+cd plugins/dsh-vision && node --test
 ```
+
+## License
+
+[MIT](LICENSE)

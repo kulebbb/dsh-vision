@@ -1,14 +1,24 @@
 {
-  "name": "@deepseek-ai/dsh-vision",
+  "name": "@kulebbb/dsh-vision",
   "version": "0.1.0",
   "description": "Give text-only DeepSeek models vision by describing images through an OpenAI-compatible vision model",
-  "private": true,
   "type": "module",
   "main": "lib/index.js",
   "exports": {
     ".": { "default": "./lib/index.js" },
     "./client": { "default": "./lib/client.js" },
     "./package.json": "./package.json"
+  },
+  "files": [
+    "lib",
+    "README.md"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kulebbb/dsh-vision.git"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "dsh": {
     "client": {
@@ -30,6 +40,17 @@
     "@deepseek-ai/dsh-settings": "*",
     "@deepseek-ai/dsh-tools": "*",
     "@deepseek-ai/schemastery": "*"
+  },
+  "peerDependenciesMeta": {
+    "@deepseek-ai/cordis": { "optional": true },
+    "@deepseek-ai/dsh-anonymous-user-id": { "optional": true },
+    "@deepseek-ai/dsh-credentials": { "optional": true },
+    "@deepseek-ai/dsh-launch-environment": { "optional": true },
+    "@deepseek-ai/dsh-llm": { "optional": true },
+    "@deepseek-ai/dsh-llm-deepseek": { "optional": true },
+    "@deepseek-ai/dsh-settings": { "optional": true },
+    "@deepseek-ai/dsh-tools": { "optional": true },
+    "@deepseek-ai/schemastery": { "optional": true }
   },
   "license": "MIT"
 }
