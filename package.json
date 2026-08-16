@@ -1,6 +1,6 @@
 {
   "name": "@kulebbb/dsh-vision",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Give text-only DeepSeek models vision by describing images through an OpenAI-compatible vision model",
   "type": "module",
   "main": "lib/index.js",
